@@ -6,7 +6,6 @@
   <thead>
     <tr>
       <th>Titulo</th>
-      <th>Descripcion</th>
       <th colspan="3"></th>
     </tr>
   </thead>
@@ -14,11 +13,11 @@
   <tbody>
     <% @temas.each do |tema| %>
       <tr>
-        <td><%= tema.titulo %></td>
-        <td><%= tema.descripcion %></td>
-        <td><%= link_to 'Show', tema %></td>
-        <td><%= link_to 'Edit', edit_tema_path(tema) %></td>
-        <td><%= link_to 'Destroy', tema, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><%= link_to tema.titulo, tema %><td>
+        <td><%= pluralize(tema.votes.count, "Voto") %></td>
+        <td><%= button_to '+1', upvote_tema_path(tema), method: :post %></<td>
+        <td><%= button_to '-1', downvote_tema_path(tema), method: :post %></<td>
+        <td><%= link_to 'Eliminar', tema, method: :delete, data: { confirm: 'Are you sure?' } %></td>
       </tr>
     <% end %>
   </tbody>

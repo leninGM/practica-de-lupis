@@ -4,7 +4,7 @@ class TemasController < ApplicationController
   # GET /temas
   # GET /temas.json
   def index
-    @temas = Tema.all
+    @temas = Tema.all.sort_by { |t| t.votes.count }.reverse
   end
 
   # GET /temas/1
@@ -28,7 +28,7 @@ class TemasController < ApplicationController
 
     respond_to do |format|
       if @tema.save
-        format.html { redirect_to @tema, notice: 'Tema was successfully created.' }
+        format.html { redirect_to temas_path, notice: 'Tema was successfully created.' }
         format.json { render :show, status: :created, location: @tema }
       else
         format.html { render :new }
@@ -42,7 +42,7 @@ class TemasController < ApplicationController
   def update
     respond_to do |format|
       if @tema.update(tema_params)
-        format.html { redirect_to @tema, notice: 'Tema was successfully updated.' }
+        format.html { redirect_to temas_path, notice: 'Tema was successfully updated.' }
         format.json { render :show, status: :ok, location: @tema }
       else
         format.html { render :edit }
@@ -59,6 +59,24 @@ class TemasController < ApplicationController
       format.html { redirect_to temas_url, notice: 'Tema was successfully destroyed.' }
       format.json { head :no_content }
     end
+  end
+
+  def upvote
+    @tema = Tema.find(params[:id])
+    @tema.votes.create
+    redirect_to(tema_path)
+  end
+
+  def downvote
+    @tema = Tema.find(params[:id])
+    if @tema.votes.any?
+      @tema.votes.first.destroy
+      flash[:notice ] = "voto eliminado!"
+    else
+      flash[:notice ] = "No hay votos"
+    end
+    redirect_to(temas_path)
+
   end
 
   private
